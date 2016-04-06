@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/generalParent"
+    android:animateLayoutChanges="true"
+    android:layout_above="@+id/doneBtn">
+
+    <FrameLayout
+        android:id="@+id/mapContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"></FrameLayout>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:theme="@style/TapMeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show cards"
+        android:id="@+id/showCardsBtn"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:layout_gravity="right|top"
+        android:layout_margin="8dp" />
+
+    <Button
+        android:theme="@style/TapMeButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fullscreen route"
+        android:id="@+id/fullscreenBtn"
+        android:textSize="12sp"
+        android:layout_gravity="right|top"
+        android:layout_margin="8dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:baselineAligned="false"
+        android:id="@+id/cardHolder">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="4dp">
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tlCard"
+                android:layout_margin="4dp"
+                android:layout_weight="0">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Achievement"
+                            android:textColor="#000000"
+                            android:textSize="18dp"
+                            android:layout_marginBottom="8dp"
+                            android:id="@+id/tlTitle" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Congratulations! You ran an average distance at a sub-average pace, you&apos;re a real winner. Please use this app again!"
+                            android:id="@+id/tlText" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/blCard"
+                android:layout_margin="4dp"
+                android:layout_weight="0">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Route info"
+                            android:textColor="#000000"
+                            android:textSize="18dp"
+                            android:layout_marginBottom="8dp"
+                            android:id="@+id/blTitle" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Your route info. it was long, and most likely boring. You finished (allegedly). "
+                            android:id="@+id/blText" />
+
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp">
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/trCard"
+                android:layout_margin="4dp"
+                android:layout_weight="0">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="General"
+                            android:textColor="#000000"
+                            android:textSize="18dp"
+                            android:layout_marginBottom="8dp"
+                            android:id="@+id/trTitle" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="A fairly small amount of text fills this field, but only up to a point, as there must be space below!"
+                            android:id="@+id/trText" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/brCard"
+                android:layout_margin="4dp"
+                android:layout_weight="0">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Step data"
+                            android:textColor="#000000"
+                            android:textSize="18dp"
+                            android:layout_marginBottom="8dp"
+                            android:id="@+id/brTitle" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Lots of steps were taken. Nice one."
+                            android:id="@+id/brText" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

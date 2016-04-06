@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="me.jackweath.mycoach.InRun"
+    tools:showIn="@layout/activity_in_run"
+    android:background="@color/bgWithCards">
+
+    <include
+        layout="@layout/button_bottom" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/scrollView2"
+            android:layout_margin="4dp"
+            android:layout_above="@+id/settingsCard">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/dataCards"
+                android:baselineAligned="true">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/col1">
+
+                    <android.support.v7.widget.CardView
+                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/levelCard"
+                        android:layout_margin="4dp">
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="8dp">
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:id="@+id/levelSpace"
+                                android:paddingTop="0dp"
+                                android:paddingLeft="4dp"
+                                android:paddingRight="4dp"
+                                android:paddingBottom="0dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceLarge"
+                                    android:text="Level:"
+                                    android:id="@+id/textView2"
+                                    android:textColor="@color/colorText"
+                                    android:layout_marginTop="0dp" />
+
+                                <TextView
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="1"
+                                    android:id="@+id/levelText"
+                                    android:textColor="@color/colorText"
+                                    android:layout_marginLeft="8dp"
+                                    android:textIsSelectable="false"
+                                    android:textSize="64dp"
+                                    android:allowUndo="false"
+                                    android:textAlignment="center" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="bottom">
+
+                                <Button
+                                    style="?android:attr/buttonStyleSmall"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="LOWER"
+                                    android:id="@+id/lowerBtn"
+                                    android:layout_weight="1"
+                                    android:layout_marginRight="4dp"
+                                    android:onClick="levelChange" />
+
+                                <Button
+                                    style="?android:attr/buttonStyleSmall"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="RAISE"
+                                    android:id="@+id/raiseBtn"
+                                    android:layout_weight="1"
+                                    android:layout_marginLeft="4dp"
+                                    android:onClick="levelChange" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/distanceCard"
+                        android:layout_margin="4dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:id="@+id/distSpace"
+                                android:gravity="center_vertical">
+
+                                <ImageView
+                                    android:layout_height="match_parent"
+                                    android:id="@+id/distIcon"
+                                    android:adjustViewBounds="true"
+                                    android:layout_width="36dp"
+                                    android:scaleType="fitStart"
+                                    android:src="@drawable/distance" />
+
+                                <TextView
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0.0"
+                                    android:id="@+id/distText"
+                                    android:textColor="@color/colorText"
+                                    android:textSize="36dp"
+                                    android:layout_marginLeft="8dp" />
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/targetPercCard"
+                        android:layout_margin="4dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/percSpace">
+
+                                <ImageView
+                                    android:layout_height="match_parent"
+                                    android:adjustViewBounds="true"
+                                    android:layout_width="24dp"
+                                    android:id="@+id/percIcon"
+                                    android:src="@drawable/bad" />
+
+                                <TextView
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0%"
+                                    android:id="@+id/percText"
+                                    android:textColor="@color/colorText"
+                                    android:gravity="center_vertical"
+                                    android:textSize="24dp"
+                                    android:layout_marginLeft="8dp" />
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/calorieCard"
+                        android:layout_margin="4dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:id="@+id/calSpace">
+
+                                <ImageView
+                                    android:layout_height="match_parent"
+                                    android:adjustViewBounds="true"
+                                    android:layout_width="16dp"
+                                    android:scaleType="fitStart"
+                                    android:id="@+id/calIcon"
+                                    android:src="@drawable/calorie" />
+
+                                <TextView
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 cals"
+                                    android:id="@+id/calText"
+                                    android:textColor="@color/colorText"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_marginLeft="8dp"
+                                    android:textSize="16sp" />
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/col2">
+
+
+                    <android.support.v7.widget.CardView
+                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/speedCard"
+                        android:layout_margin="4dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="16dp">
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/speedSpace">
+
+                                <ImageView
+                                    android:layout_height="match_parent"
+                                    android:adjustViewBounds="true"
+                                    android:layout_width="36dp"
+                                    android:id="@+id/imageView"
+                                    android:src="@drawable/speed"
+                                    android:layout_marginRight="8dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0.0"
+                                    android:id="@+id/speedText"
+                                    android:textColor="@color/colorText"
+                                    android:textSize="36dp" />
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/strideCard"
+                        android:layout_margin="4dp">
+
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/strideSpace">
+
+                                <ImageView
+                                    android:layout_height="match_parent"
+                                    android:adjustViewBounds="true"
+                                    android:layout_width="24dp"
+                                    android:id="@+id/strideIcon"
+                                    android:src="@drawable/stride" />
+
+                                <TextView
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0.0"
+                                    android:id="@+id/strideText"
+                                    android:textColor="@color/colorText"
+                                    android:textSize="24dp"
+                                    android:layout_marginLeft="8dp" />
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <Button
+                        android:theme="@style/TapMeButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="View targets"
+                        android:id="@+id/targetBtn"
+                        android:layout_gravity="center_horizontal"
+                        android:onClick="viewTargsPressed" />
+
+                    <android.support.v7.widget.CardView
+                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/intervalCard"
+                        android:layout_margin="4dp">
+
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/intSpace">
+
+                                <ImageView
+                                    android:layout_height="match_parent"
+                                    android:adjustViewBounds="true"
+                                    android:layout_width="32dp"
+                                    android:id="@+id/intIcon"
+                                    android:src="@drawable/interval" />
+
+                                <TextView
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="-"
+                                    android:id="@+id/intText"
+                                    android:textColor="@color/colorText"
+                                    android:gravity="center_vertical"
+                                    android:textSize="36dp"
+                                    android:layout_marginLeft="8dp" />
+
+                            </LinearLayout>
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/cadenceCard"
+                        android:layout_margin="4dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/cadenSpace">
+
+                                <ImageView
+                                    android:layout_height="match_parent"
+                                    android:adjustViewBounds="true"
+                                    android:layout_width="24dp"
+                                    android:id="@+id/cadenIcon"
+                                    android:src="@drawable/cadence"
+                                    android:layout_marginRight="8dp" />
+
+                                <TextView
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
+                                    android:id="@+id/cadenText"
+                                    android:textColor="@color/colorText"
+                                    android:textSize="24sp" />
+
+                            </LinearLayout>
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/settingsCard"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/timeCard"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="8dp">
+
+                <Switch
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Reduced Audio"
+                    android:id="@+id/reducedAudioSwitch"
+                    android:layout_below="@+id/linearLayout"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:checked="false"
+                    android:layout_alignRight="@+id/switch2"
+                    android:layout_alignEnd="@+id/switch2"
+                    android:textSize="@dimen/defaultText"
+                    android:textColor="@color/colorText" />
+
+                <Switch
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Auto Level Adjustments"
+                    android:id="@+id/levelAdjustSwitch"
+                    android:checked="false"
+                    android:layout_below="@+id/switch2"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignRight="@+id/switch2"
+                    android:layout_alignEnd="@+id/switch2"
+                    android:textSize="@dimen/defaultText"
+                    android:textColor="@color/colorText" />
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/timeCard"
+            android:layout_above="@+id/bottomBtn"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:id="@+id/imageView2"
+                        android:src="@drawable/time"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="00:00:00"
+                        android:id="@+id/timeText"
+                        android:textColor="@color/colorText"
+                        android:textSize="36dp"
+                        android:textAlignment="center"
+                        android:layout_marginRight="36dp" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+</RelativeLayout>

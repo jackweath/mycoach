@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button
+    android:layout_width="fill_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:id="@+id/bottomBtn"
+    style="?android:attr/borderlessButtonStyle"
+    android:layout_alignParentBottom="true"
+    android:background="@color/colorAccent"
+    android:textColor="@color/colorLightText"
+    android:textSize="18sp"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

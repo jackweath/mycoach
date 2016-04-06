@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">myCoach</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_data">Run data options</string>
+    <string name="title_activity_pre_run">Run Setup</string>
+    <string name="title_activity_home">myCoach Home</string>
+    <string name="title_activity_settings">Personal Settings</string>
+    <string name="title_activity_post_run">Post Run Display</string>
+    <string name="title_activity_data_settings">Data Settings</string>
+
+    <string name="users_settings">me.jackweath.mycoach.USER_SETTINGS</string>
+    <string name="users_name">NAME</string>
+    <string name="users_dob">DOB</string>
+    <string name="users_weight">WEIGHT</string>
+    <string name="users_height">HEIGHT</string>
+    <string name="users_gender">GENDER</string>
+
+    <string name="open_title">Open run</string>
+    <string name="sprint_title">Sprint splits</string>
+    <string name="pace_title">Pace training</string>
+
+    <string name="open_mode">open</string>
+    <string name="sprint_mode">sprint</string>
+    <string name="pace_mode">pace</string>
+
+    <string name="open_desc">Train your way, without targets and requirements, but with all the data and tips you\'d have in any other mode.</string>
+    <string name="sprint_desc">Short tough sprint intervals, at high speeds. Burn lots of calories is a short amount of time, and improve fitness quickly. </string>
+    <string name="pace_desc">Improve your pace and stamina with 3 long distances, at consistent speeds. Strengthen your core and run further, faster.</string>
+</resources>

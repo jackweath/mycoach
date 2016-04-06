@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lecho.lib.hellocharts.view.LineChartView
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="8dp"
+    android:paddingLeft="4dp"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:id="@+id/chart"
+    android:background="@android:color/background_dark"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
