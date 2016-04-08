@@ -25,15 +25,33 @@ public class PostRunActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private long runID;
+    private int intervals;
+    private DataManage dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_run);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras == null) {
+            Log.e("PostRunExtras", "No runID handed to activity");
+            finish(); // Close the activity, as there's nothing to display
+        } else {
+            runID = extras.getLong("runID");
+        }
+
+        dbHelper = new DataManage(getApplicationContext());
+
+        ArrayList<String> summaryRow = dbHelper.readTableRow("summary", runID);
+        intervals = Integer.parseInt(summaryRow.get(3));
+        String title = summaryRow.get(1);
+        Log.d("TitleMischief", title);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("Mode, date");
+        getSupportActionBar().setTitle(title);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -48,13 +66,12 @@ public class PostRunActivity extends AppCompatActivity {
             }
         });
         bottomBtn.setText("Done");
-
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(GeneralFragment.newInstance(), "GENERAL");
-        adapter.addFragment(new IntervalFragment(), "INTERVALS");
+        adapter.addFragment(GeneralFragment.newInstance(runID), "GENERAL");
+        adapter.addFragment(IntervalFragment.newInstance(runID, intervals), "INTERVALS");
         adapter.addFragment(new DetailFragment(), "DETAILS");
         viewPager.setAdapter(adapter);
     }
@@ -78,4 +95,5 @@ public class PostRunActivity extends AppCompatActivity {
     public void donePressed() {
         finish();
     }
+
 }

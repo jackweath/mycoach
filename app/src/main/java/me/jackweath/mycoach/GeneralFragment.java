@@ -1,5 +1,8 @@
 package me.jackweath.mycoach;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,14 +21,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.lang.reflect.GenericArrayType;
+import java.util.ArrayList;
 
 
 /**
  * Created by jackweatherilt on 30/03/16.
  */
-public class GeneralFragment extends Fragment implements OnMapReadyCallback {
+public class GeneralFragment extends Fragment implements BigMapFragment.OnMapReadyListener {
 
     BigMapFragment mMapFragment;
     private static GoogleMap mMap;
@@ -37,6 +42,9 @@ public class GeneralFragment extends Fragment implements OnMapReadyCallback {
     boolean cardsVisible = true;
     Button showCardsBtn, fullscreenBtn;
     LinearLayout cardHolder;
+    DataManage dbHelper;
+    private long runId;
+    private Integer interval;
 
     public GeneralFragment() {
         // Required empty public constructor
@@ -50,6 +58,8 @@ public class GeneralFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        dbHelper = new DataManage(getContext());
 
         view = inflater.inflate(R.layout.fragment_general, container, false);
         mMapFragment = BigMapFragment.newInstance();
@@ -70,22 +80,20 @@ public class GeneralFragment extends Fragment implements OnMapReadyCallback {
         fullscreenBtn = (Button) view.findViewById(R.id.fullscreenBtn);
         showCardsBtn = (Button) view.findViewById(R.id.showCardsBtn);
 
+        slideOut(showCardsBtn, true, true);
         View.OnClickListener onClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Toggle the cards
                 if (cardsVisible) {
                     // Hide the cards
-                    cardHolder.setVisibility(View.INVISIBLE);
-                    fullscreenBtn.setVisibility(View.GONE);
-                    // Show the "show cards" button
-                    showCardsBtn.setVisibility(View.VISIBLE);
+                    slideOut(cardHolder, false, false);
+                    slideOut(fullscreenBtn, true, false);
+                    slideIn(showCardsBtn);
                 } else {
-                    // Hide the "show cards" button
-                    showCardsBtn.setVisibility(View.GONE);
-                    fullscreenBtn.setVisibility(View.VISIBLE);
-                    // Show the cards
-                    cardHolder.setVisibility(View.VISIBLE);
+                    slideIn(cardHolder);
+                    slideIn(fullscreenBtn);
+                    slideOut(showCardsBtn, true, false);
                 }
 
                 cardsVisible = !cardsVisible;
@@ -99,14 +107,10 @@ public class GeneralFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap map) {
-        mMap = map;
-
-        // Add a marker to my home and move the camera
-        LatLng home = new LatLng(51.6641486, -0.4107860999999957);
-        mMap.addMarker(new MarkerOptions().position(home).title("Where myCoach was developed!"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(home));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(5.0f));
+    public void onMapReady() {
+        mMap = mMapFragment.getMap();
+        Log.d("MAP_DEBUG", "onMapReady callled");
+        plotRoute();
     }
 
     @Override
@@ -125,8 +129,10 @@ public class GeneralFragment extends Fragment implements OnMapReadyCallback {
         mMapFragment.onLowMemory();
     }
 
-    public static GeneralFragment newInstance() {
+    public static GeneralFragment newInstance(long runId) {
         GeneralFragment frag = new GeneralFragment();
+
+        frag.runId = runId;
 
         frag.tlTitle = "Achievement";
         frag.tlText = "Congratulations! You ran an average distance at a sub-average pace, you're a real winner. Please use this app again!";
@@ -140,8 +146,11 @@ public class GeneralFragment extends Fragment implements OnMapReadyCallback {
         return frag;
     }
 
-    public static GeneralFragment newItervalInst(int interval) {
+    public static GeneralFragment newItervalInst(long runId, int interval) {
         GeneralFragment frag = new GeneralFragment();
+
+        frag.runId = runId;
+        frag.interval = interval;
 
         frag.tlTitle = "Achievement";
         frag.tlText = "Congratulations! You achieved 97% of your targets on level 22 in this interval.";
@@ -153,6 +162,79 @@ public class GeneralFragment extends Fragment implements OnMapReadyCallback {
         frag.brText = "Step information will come here etc.";
 
         return frag;
+    }
+
+    private void plotRoute() {
+        Log.d("MAP_DEBUG", "route plotting beginning, " + interval);
+
+        if (interval == null && mMap != null) {
+            Log.d("MAP_DEBUG", "no interval, beginning plotting");
+            PolylineOptions options = new PolylineOptions();
+            ArrayList<ArrayList<String>> entries = dbHelper.getRunDetails(runId);
+
+            CustomLocation start = new CustomLocation((entries.get(0)).get(7));
+            LatLng startLatLng = start.toLatLng();
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(startLatLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(11.0f));
+            mMap.addMarker(new MarkerOptions()
+                    .position(startLatLng)
+                    .title("Run start"));
+
+            Log.d("MAP_DEBUG", startLatLng.toString());
+
+            for (ArrayList<String> row : entries) {
+                // 7th item is the location string
+                CustomLocation locat = new CustomLocation(row.get(7));
+                Log.d("MAP_DEBUG", locat.toString());
+                options.add(locat.toLatLng());
+            }
+
+            mMap.addPolyline(options
+                    .color(Color.RED)
+                    .width(5)
+                    .visible(true)
+                    .zIndex(30));
+
+            Log.d("MAP_DEBUG", "route plotting ended");
+
+        }
+    }
+
+
+    private void slideOut(final View view, boolean slidesRight, boolean instant) {
+        int slideDist = view.getWidth();
+        if (!slidesRight) {
+            slideDist =  - slideDist;
+        }
+
+        int slideTime = 300;
+        if (instant) {
+            slideTime = 0;
+        }
+
+        view.animate()
+                .translationX(slideDist)
+                .alpha(0.0f)
+                .setDuration(slideTime)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                    }
+                });
+    }
+
+    private void slideIn(View view) {
+        view.animate()
+                .translationX(0)
+                .alpha(1.0f)
+                .setDuration(300)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                    }
+                });
     }
 
 }

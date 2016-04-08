@@ -29,6 +29,7 @@ public class DataManage extends SQLiteOpenHelper{
         db.execSQL(SQL_CREATE_SUMMARY);
         db.execSQL(SQL_CREATE_DETAILED);
         db.execSQL(SQL_CREATE_LIVE);
+        db.close();
     }
 
     // Currently no special treatment for upgrading or downgrading the schema
@@ -36,7 +37,7 @@ public class DataManage extends SQLiteOpenHelper{
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {  }
 
     /* START OF NEW STUFF ====== TAKE OUT OF WRITE UP INITIAL */
-    public void processData(long max) {
+    public void processData(long max, long runID) {
         prevDist = prevTime = prevSteps = 0; // Reset carrier variables
         long spacing = 10; // 5 seconds = 10 * 0.5 seconds
 
@@ -44,11 +45,11 @@ public class DataManage extends SQLiteOpenHelper{
             ArrayList<String> tableRow = readTableRow("live", i);
             HashMap<String, String> detailedFormat = formatToDetailed(tableRow);
 
-            addDetailedData(detailedFormat);
+            addDetailedData(runID, detailedFormat);
         }
 
         // ALWAYS use the last point
-        addDetailedData(
+        addDetailedData(runID,
                 formatToDetailed(readTableRow("live", max))
         );
     }
@@ -57,9 +58,12 @@ public class DataManage extends SQLiteOpenHelper{
     long prevTime;
     int prevSteps;
     private HashMap<String, String> formatToDetailed(ArrayList<String> liveRow) {
+        // Creating new HashMap to store row info
         HashMap<String, String> detailedRow = new HashMap<>();
+
+        // Location details
         CustomLocation locat = new CustomLocation(liveRow.get(5));
-        detailedRow.put("location", locat.toString());
+        detailedRow.put("position", locat.toString());
 
         // Getting time
         long time = Long.parseLong(liveRow.get(1));
@@ -95,6 +99,7 @@ public class DataManage extends SQLiteOpenHelper{
         double elevation = locat.getElevation();
         detailedRow.put("elevation", String.valueOf(elevation));
 
+
         return detailedRow;
     }
     /* END OF NEW STUFF ====== TAKE OUT OF WRITE UP INITIAL */
@@ -102,7 +107,7 @@ public class DataManage extends SQLiteOpenHelper{
     /* ************************************************************** */
     /*               Shorthand methods for generic tasks              */
     // Add a single row of live data
-    public long addLiveData(double time, int steps, int interval, double distance,
+    public long addLiveData(long time, int steps, int interval, double distance,
                             String position, int level) {
         // Get database that is readable
         SQLiteDatabase db = this.getWritableDatabase();
@@ -123,13 +128,14 @@ public class DataManage extends SQLiteOpenHelper{
                 null,
                 values);
 
+        db.close();
         // Return the row id that the data was inserted into
         return newRowId;
     }
 
     // Adds a row of summary data
-    public long addSummaryData(String name, String mode, int intervals, String date,
-                               double distance, double time, int steps, int level) {
+    public long addSummaryData(String name, String mode, int intervals, long date,
+                               double distance, long time, int steps, int level) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // Defining the values and putting them into the ContentValues object
@@ -149,15 +155,15 @@ public class DataManage extends SQLiteOpenHelper{
                 null,
                 values);
 
+        db.close();
         // Return row id
         return newRowId;
     }
 
     // Adds a row of more detailed data (for post-run display)
-    public long addDetailedData(HashMap<String, String> row) {
+    public long addDetailedData(long runid, HashMap<String, String> row) {
 
-        int runid = Integer.parseInt(row.get("runID"));
-        double time = Double.parseDouble(row.get("time"));
+        long time = Long.parseLong(row.get("time"));
         int interval = Integer.parseInt(row.get("interval"));
         double speed = Double.parseDouble(row.get("speed"));
         double cadence = Double.parseDouble(row.get("cadence"));
@@ -183,11 +189,12 @@ public class DataManage extends SQLiteOpenHelper{
 
         // Insert value (row id is returned, can be used to check for errors if necessary)
         long newRowId = db.insert(
-                DataContract.SummaryColumns.TABLE_NAME,
+                DataContract.DetailColumns.TABLE_NAME,
                 null,
                 values);
 
         // Return row id
+        db.close();
         return newRowId;
     }
 
@@ -208,6 +215,7 @@ public class DataManage extends SQLiteOpenHelper{
                 values,
                 selection,
                 selectionArgs);
+        db.close();
     }
 
     public void deleteRun(int id) {
@@ -223,6 +231,7 @@ public class DataManage extends SQLiteOpenHelper{
         // Repeat, but remove values with RUNID of parameter in the details table
         selection = DataContract.DetailColumns.COLUMN_RUNID + " LIKE ?";
         db.delete(DataContract.SummaryColumns.TABLE_NAME, selection, selectionArgs);
+        db.close();
     }
 
     // Reading a row from one of 3 database tables
@@ -264,7 +273,19 @@ public class DataManage extends SQLiteOpenHelper{
                     break;
                 case "detailed":
                     // Array of columns
-                    columns = new String[]{"0"};
+                    columns = new String[]{
+                            DataContract._ID,
+                            DataContract.DetailColumns.COLUMN_RUNID,
+                            DataContract.DetailColumns.COLUMN_TIME,
+                            DataContract.DetailColumns.COLUMN_INT,
+                            DataContract.DetailColumns.COLUMN_SPEED,
+                            DataContract.DetailColumns.COLUMN_CADENCE,
+                            DataContract.DetailColumns.COLUMN_STRIDE,
+                            DataContract.DetailColumns.COLUMN_POS,
+                            DataContract.DetailColumns.COLUMN_ELEVA,
+                            DataContract.DetailColumns.COLUMN_LEVEL
+                    };
+
                     tableName = DataContract.LiveColumns.TABLE_NAME;
                     break;
                 default:
@@ -300,10 +321,11 @@ public class DataManage extends SQLiteOpenHelper{
                 // How to react when nothing is present!
                 // Need to decide on this
             }
-
+            db.close();
             // Return the array list
             return vals;
         } else {
+            db.close();
             return new ArrayList<>();
         }
     }
@@ -327,6 +349,48 @@ public class DataManage extends SQLiteOpenHelper{
         db.execSQL(SQL_CREATE_LIVE);
     }
 
+    public long length(long id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM "
+                + DataContract.DetailColumns.TABLE_NAME
+                + " WHERE id=" + id, null);
+
+        long count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getLong(0);
+        }
+
+        cursor.close();
+        db.close();
+
+        return count;
+    }
+
+    public ArrayList<ArrayList<String>> getRunDetails(long runID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM "
+                + DataContract.DetailColumns.TABLE_NAME
+                + " WHERE " + DataContract.DetailColumns.COLUMN_RUNID
+                + "=" + runID, null);
+
+        ArrayList<ArrayList<String>> rowCollection = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                ArrayList<String> row = new ArrayList<>();
+                for (int i = 0; i < cursor.getColumnCount(); i ++) {
+                    row.add(cursor.getString(i));
+                }
+
+                rowCollection.add(row);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close(); // Add this everywhere else too!
+
+        return rowCollection;
+    }
 
     /* ********************************************************* */
     /*                  Database schema is defined               */
@@ -391,9 +455,9 @@ public class DataManage extends SQLiteOpenHelper{
                     DataContract.SummaryColumns.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
                     DataContract.SummaryColumns.COLUMN_MODE + TEXT_TYPE + COMMA_SEP +
                     DataContract.SummaryColumns.COLUMN_INTS + INT_TYPE + COMMA_SEP +
-                    DataContract.SummaryColumns.COLUMN_DATE + TEXT_TYPE + COMMA_SEP +
+                    DataContract.SummaryColumns.COLUMN_DATE + INT_TYPE + COMMA_SEP +
                     DataContract.SummaryColumns.COLUMN_DIST + REAL_TYPE + COMMA_SEP +
-                    DataContract.SummaryColumns.COLUMN_TIME + REAL_TYPE + COMMA_SEP +
+                    DataContract.SummaryColumns.COLUMN_TIME + INT_TYPE + COMMA_SEP +
                     DataContract.SummaryColumns.COLUMN_STEPS + INT_TYPE + COMMA_SEP +
                     DataContract.SummaryColumns.COLUMN_LEVEL + INT_TYPE + " )";
 
@@ -402,7 +466,7 @@ public class DataManage extends SQLiteOpenHelper{
             "CREATE TABLE IF NOT EXISTS " + DataContract.DetailColumns.TABLE_NAME + " (" +
                     DataContract._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     DataContract.DetailColumns.COLUMN_RUNID + INT_TYPE + COMMA_SEP +
-                    DataContract.DetailColumns.COLUMN_TIME + REAL_TYPE + COMMA_SEP +
+                    DataContract.DetailColumns.COLUMN_TIME + INT_TYPE + COMMA_SEP +
                     DataContract.DetailColumns.COLUMN_INT + INT_TYPE + COMMA_SEP +
                     DataContract.DetailColumns.COLUMN_SPEED + REAL_TYPE + COMMA_SEP +
                     DataContract.DetailColumns.COLUMN_CADENCE + REAL_TYPE + COMMA_SEP +
@@ -415,7 +479,7 @@ public class DataManage extends SQLiteOpenHelper{
     private static final String SQL_CREATE_LIVE =
             "CREATE TABLE IF NOT EXISTS " + DataContract.LiveColumns.TABLE_NAME + " (" +
                     DataContract._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    DataContract.LiveColumns.COLUMN_TIME + REAL_TYPE + COMMA_SEP +
+                    DataContract.LiveColumns.COLUMN_TIME + INT_TYPE + COMMA_SEP +
                     DataContract.LiveColumns.COLUMN_STEPS + INT_TYPE + COMMA_SEP +
                     DataContract.LiveColumns.COLUMN_INT + INT_TYPE + COMMA_SEP +
                     DataContract.LiveColumns.COLUMN_DIST + REAL_TYPE + COMMA_SEP +

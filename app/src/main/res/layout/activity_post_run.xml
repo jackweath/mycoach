@@ -17,8 +17,6 @@
             layout="@layout/toolbar"
             android:id="@+id/toolbar"></include>
 
-
-
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabs"
                     android:layout_width="match_parent"

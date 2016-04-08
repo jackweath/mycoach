@@ -50,13 +50,16 @@ import com.google.android.gms.location.LocationListener;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.Date;
 
 public class InRun extends AppCompatActivity implements SensorEventListener, LocationListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -128,7 +131,7 @@ public class InRun extends AppCompatActivity implements SensorEventListener, Loc
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
             // An error has occured if this is executed
-            Log.e("Extras ERROR", "There were no errors found!");
+            Log.e("InRunExtras", "There were no run options found!");
         } else {
             // Pass over the settings!
             mode = extras.getString("mode");
@@ -156,8 +159,8 @@ public class InRun extends AppCompatActivity implements SensorEventListener, Loc
                         .get(getString(R.string.users_weight)));
 
         progress = new ProgressDialog(this);
-        progress.setTitle("Loading");
-        progress.setMessage("Fixing your GPS position...");
+        progress.setTitle("Fixing your GPS position...");
+        progress.setMessage("This usually takes around 15 seconds.");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setCancelable(false);
         progress.show();
@@ -224,11 +227,11 @@ public class InRun extends AppCompatActivity implements SensorEventListener, Loc
             runTime = Calc.timeMilli() - startTime;
             if (prevLocat != null) {
 
-                String locatFormat = "[" + prevLocat.getLatitude()
-                        + ":" + prevLocat.getLongitude() + "]";
+                /* === NEW CODE HERE === */
+                CustomLocation locatFormat = new CustomLocation(locat);
 
                 lastInsert = dbHelper.addLiveData(runTime, steps,
-                        interval, distance, locatFormat, level);
+                        interval, distance, locatFormat.toString(), level);
             }
         }
     };
@@ -378,10 +381,27 @@ public class InRun extends AppCompatActivity implements SensorEventListener, Loc
                         // End run tasks
                         timer.cancel();
 
-                        // Data sent to summary table.
+                        // Getting a neat format for the calendar
+                        Calendar date = GregorianCalendar.getInstance();
+                        String runTitle = mode + " "
+                                + date.get(Calendar.DAY_OF_MONTH) + "/"
+                                + date.get(Calendar.MONTH) + "/"
+                                + date.get(Calendar.YEAR) + " "
+                                + date.get(Calendar.HOUR_OF_DAY) + ":"
+                                + date.get(Calendar.MINUTE) ;
+
+                        // Get the time since epoch (used for the date)
+                        long timeEpoch = System.currentTimeMillis();
+                        Log.d("TitleMischief", runTitle);
+                        // Data sent to summary table & detail table
+                        long runID = dbHelper.addSummaryData(runTitle, mode, interval, timeEpoch,
+                                distance, runTime, steps, level);
+
+                        dbHelper.processData(lastInsert, runID); // Relational database!
 
                         // Open post-run activity.
                         Intent intent = new Intent(getApplicationContext(), PostRunActivity.class);
+                        intent.putExtra("runID", runID); // Give the next activity the run ID
                         startActivity(intent);
 
                         // Stop listeners

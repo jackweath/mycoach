@@ -16,6 +16,8 @@ public class IntervalFragment extends Fragment {
     ViewPagerAdapter adapter;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+    private long runID;
+    private int intsDone;
 
     public IntervalFragment() {
         // Required empty public constructor
@@ -38,9 +40,8 @@ public class IntervalFragment extends Fragment {
 
         adapter = new ViewPagerAdapter(getChildFragmentManager());
 
-        int intsDone = 3;
         for (int i = 1; i < intsDone + 1; i++) {
-            adapter.addFragment(GeneralFragment.newItervalInst(i),
+            adapter.addFragment(GeneralFragment.newItervalInst(0, i), // 0 is temp
                     "Interval " + i);
         }
 
@@ -55,5 +56,13 @@ public class IntervalFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
 
         return view;
+    }
+
+    public static IntervalFragment newInstance(long runId, int intervals) {
+        IntervalFragment fragment = new IntervalFragment();
+        fragment.runID = runId;
+        fragment.intsDone = intervals;
+
+        return fragment;
     }
 }

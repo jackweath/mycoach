@@ -1,7 +1,9 @@
 package me.jackweath.mycoach;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +33,10 @@ public class BigMapFragment extends SupportMapFragment {
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
         Fragment fragment = getParentFragment();
+
+
         if (fragment != null && fragment instanceof OnMapReadyListener) {
+            Log.d("MAP_DEBUG", "onMapReady setup");
             ((OnMapReadyListener) fragment).onMapReady();
         }
 

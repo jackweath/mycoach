@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.lang.Number;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -67,6 +69,7 @@ public class Calc {
 
     /* *********************************************** */
     /*            Calculations for Distance            */
+    /*
     public static float distance(Location start, Location end) {
         double startLat = start.getLatitude();
         double startLon = start.getLongitude();
@@ -83,9 +86,9 @@ public class Calc {
         Log.d("DIST_DEBUG", dist + "");
         return dist / 1000;
     }
+    */
 
-
-    public static double distanceOrg(Location start, Location end) {
+    public static double distance(Location start, Location end) {
         final double RADIUS = 6372.8; // Radius of the earth
 
         // Convert to radians, as required for formula
@@ -237,6 +240,4 @@ public class Calc {
 
         return  formattedTime;
     }
-
-
 }
